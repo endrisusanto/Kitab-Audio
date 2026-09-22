@@ -6,7 +6,6 @@
 (function () {
   let chatHistory = [];
   let isSending = false;
-  let availableModels = ["google/gemma-4-e4b", "google/gemma-4-12b-qat", "qwen3.6-35b-a3b-uncensored-hauhaucs-aggressive"];
   let allProducts = [];
 
   const openAiChatBtn = document.getElementById("openAiChatBtn");
@@ -15,13 +14,11 @@
   const chatMessagesEl = document.getElementById("chatMessages");
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
-  const aiModelSelect = document.getElementById("aiModelSelect");
   const clearChatBtn = document.getElementById("clearChatBtn");
   const quickPromptChips = document.querySelectorAll(".quick-prompt-chip");
 
   async function init() {
     setupEventListeners();
-    await fetchModels();
     await loadProducts();
     
     // Add initial greeting if history is empty
@@ -46,30 +43,6 @@
     } catch (e) {
       console.warn("Could not load products for chat:", e);
     }
-  }
-
-  async function fetchModels() {
-    try {
-      const resp = await fetch("/api/models");
-      if (!resp.ok) return;
-      const data = await resp.json();
-      if (data && data.data && data.data.length > 0) {
-        availableModels = data.data.map(m => m.id).filter(id => !id.includes("embedding"));
-        renderModelOptions();
-      }
-    } catch (e) {
-      console.warn("Using fallback models:", e);
-      renderModelOptions();
-    }
-  }
-
-  function renderModelOptions() {
-    if (!aiModelSelect) return;
-    aiModelSelect.innerHTML = availableModels.map(m => `
-      <option value="${m}" ${m.includes("gemma-4-e4b") ? "selected" : ""}>
-        Model: ${m}
-      </option>
-    `).join("");
   }
 
   function setupEventListeners() {
@@ -170,12 +143,10 @@
     const loadingId = appendLoadingIndicator();
 
     try {
-      const selectedModel = aiModelSelect ? aiModelSelect.value : "google/gemma-4-e4b";
       const resp = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: selectedModel,
           messages: chatHistory
         })
       });
