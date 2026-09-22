@@ -1,0 +1,14 @@
+services:
+  kitab-audio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kitab-audio-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8000}:8080"
+    environment:
+      - PORT=8080
+    volumes:
+      # Mount XLSX file so updating the spreadsheet and restarting refreshes data
+      - .:/app

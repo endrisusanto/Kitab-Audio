@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitab Audio - Panduan &amp; Tier List Audio Gear</title>
+  <meta name="description" content="Katalog interaktif 812+ audio gear (TWS, IEM, DAC, Headphone, Speaker) lengkap dengan tier list, skor suara, komparasi side-by-side, dan AI concierge.">
+  <meta name="theme-color" content="#0f131a">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="apple-touch-icon" href="favicon.svg">
+
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Kitab Audio">
+  <meta property="og:title" content="Kitab Audio - Panduan &amp; Tier List Audio Gear">
+  <meta property="og:description" content="Katalog interaktif 812+ audio gear (TWS, IEM, DAC, Headphone, Speaker) lengkap dengan tier list, skor suara frekuensi, komparasi side-by-side, dan asisten AI.">
+  <meta property="og:image" content="favicon.svg">
+  <meta property="og:locale" content="id_ID">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Kitab Audio - Panduan &amp; Tier List Audio Gear">
+  <meta name="twitter:description" content="Katalog interaktif 812+ audio gear (TWS, IEM, DAC, Headphone, Speaker) lengkap dengan tier list, skor suara frekuensi, komparasi side-by-side, dan asisten AI.">
+  <meta name="twitter:image" content="favicon.svg">
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo" aria-hidden="true">KA</div>
+        <div>
+          <h1 class="brand-title">Kitab Audio</h1>
+          <div class="brand-subtitle">Panduan & Tier List Audio Gear Fernanda Gunsan (Update Sep 2026)</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="openAiChatBtn" class="btn btn-primary btn-sm" title="Tanya Asisten AI Kitab Audio">
+          <span>🤖 Tanya AI Chat</span>
+        </button>
+        <button id="openReadmeBtn" class="btn btn-secondary btn-sm" title="Buka Panduan & Cara Baca Tier">
+          <span>📖 Panduan Dasar</span>
+        </button>
+        <button id="conciergeToggleBtn" class="btn btn-secondary btn-sm" title="Buka/Tutup Asisten Panduan">
+          <span>Tanya Panduan Audio</span>
+        </button>
+        <button id="themeToggleBtn" class="btn btn-ghost btn-sm" title="Ganti Tema">
+          <span>☀️ Mode Terang</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Interactive Typewriter Guidance Concierge -->
+    <section id="conciergePanel" class="concierge-panel" aria-label="Panduan Interaktif Audio">
+      <div class="concierge-header">
+        <div class="concierge-title-area">
+          <span class="concierge-badge">Panduan Cepat</span>
+          <h2 class="concierge-title">Temukan Audio Gear yang Pas</h2>
+        </div>
+      </div>
+
+      <div id="typewriterOutput" class="typewriter-box" aria-live="polite">
+        <!-- Typewriter text injected here -->
+      </div>
+
+      <div id="conciergeOptions" class="concierge-options">
+        <!-- Dynamic interactive choice buttons -->
+      </div>
+
+      <div id="conciergeResults" class="concierge-results">
+        <!-- Recommended gear cards injected here -->
+      </div>
+    </section>
+
+    <!-- Category Navigation Tabs -->
+    <nav class="category-nav-wrapper" aria-label="Kategori Audio">
+      <div id="categoryNav" class="category-nav">
+        <!-- 21 Category Tabs injected here -->
+      </div>
+    </nav>
+
+    <!-- Search & Filter Toolbar -->
+    <section class="toolbar-section" aria-label="Filter dan Pencarian">
+      <div class="toolbar-row">
+        <div class="search-wrapper">
+          <span class="search-icon" aria-hidden="true">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Cari nama gear, driver, codec, atau impresi suara..." 
+            aria-label="Pencarian gear audio"
+          >
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Urutkan:</span>
+          <select id="sortSelect" class="select-custom" aria-label="Pilihan pengurutan">
+            <option value="tier">Tier Tertinggi (S+, S, A)</option>
+            <option value="price_asc">Harga Terendah</option>
+            <option value="price_desc">Harga Tertinggi</option>
+            <option value="name">Nama Produk (A-Z)</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Tampilan:</span>
+          <div class="view-toggle">
+            <button id="viewGridBtn" class="view-btn active" title="Tampilan Kartu">Kartu</button>
+            <button id="viewTableBtn" class="view-btn" title="Tampilan Tabel">Tabel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-row">
+        <div class="filter-group">
+          <span class="filter-label">Filter Tier:</span>
+          <div class="tier-pills" role="group" aria-label="Filter Tier">
+            <button class="tier-pill active" data-tier="ALL">Semua</button>
+            <button class="tier-pill" data-tier="SS">Tier SS</button>
+            <button class="tier-pill" data-tier="S">Tier S</button>
+            <button class="tier-pill" data-tier="A">Tier A</button>
+            <button class="tier-pill" data-tier="B">Tier B</button>
+            <button class="tier-pill" data-tier="C">Tier C</button>
+            <button class="tier-pill" data-tier="D">Tier D</button>
+            <button class="tier-pill" data-tier="E">Tier E</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-row price-range-row" style="padding-top: 10px; border-top: 1px solid var(--border-subtle); align-items: center; gap: 16px;">
+        <div class="dual-range-container" style="flex: 1; min-width: 280px;">
+          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 6px;">
+            <span class="filter-label">Rentang Harga:</span>
+            <strong id="priceRangeLabel" style="font-size: 0.85rem; color: var(--accent-primary);">Semua Rentang Harga (Rp 0 - Bebas)</strong>
+          </div>
+          
+          <div class="dual-slider-wrapper">
+            <div class="slider-track-highlight" id="sliderHighlight"></div>
+            <input 
+              type="range" 
+              id="minPriceInput" 
+              class="range-slider-dual min-slider" 
+              min="0" 
+              max="25000000" 
+              step="100000" 
+              value="0"
+              aria-label="Batas bawah harga"
+            >
+            <input 
+              type="range" 
+              id="maxPriceInput" 
+              class="range-slider-dual max-slider" 
+              min="0" 
+              max="25000000" 
+              step="100000" 
+              value="25000000"
+              aria-label="Batas atas harga"
+            >
+          </div>
+          
+          <div style="display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">
+            <span id="minPriceDisplay">Min: Rp 0</span>
+            <span id="maxPriceDisplay">Maks: Bebas</span>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <span class="filter-label">Preset:</span>
+          <div class="tier-pills" role="group" aria-label="Preset Budget">
+            <button class="preset-pill active" data-min="0" data-max="25000000">Semua</button>
+            <button class="preset-pill" data-min="0" data-max="500000">&lt; 500rb</button>
+            <button class="preset-pill" data-min="500000" data-max="1500000">500rb - 1.5jt</button>
+            <button class="preset-pill" data-min="1500000" data-max="4000000">1.5jt - 4jt</button>
+            <button class="preset-pill" data-min="4000000" data-max="25000000">&gt; 4jt</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Category Header & Notes -->
+    <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+      <h2 id="categoryTitle" style="font-size: 1.15rem; font-weight: 700;">TWS</h2>
+    </div>
+    <div id="categoryNotes" class="category-notes" style="display: none;"></div>
+
+    <!-- Main Catalog View (Grid / Table) -->
+    <main id="catalogContainer">
+      <!-- Injected via JavaScript -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>Data bersumber dari database publik Kitab Audio Fernanda Gunsan.</div>
+    </footer>
+  </div>
+
+  <!-- Comparison Drawer -->
+  <aside id="compareDrawer" class="compare-drawer" aria-label="Laci Komparasi">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <strong style="font-size: 0.85rem;">Perangkat Terpilih:</strong>
+      <div id="compareList" class="compare-items-list"></div>
+    </div>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary btn-sm" onclick="window.clearCompare()">Reset</button>
+      <button class="btn btn-primary btn-sm" onclick="window.showComparisonModal()">Bandingkan Sekarang</button>
+    </div>
+  </aside>
+
+  <!-- Product Detail Modal -->
+  <div id="productModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Detail Produk">
+    <div id="modalBody" class="modal-content">
+      <!-- Modal Content injected via JS -->
+    </div>
+  </div>
+
+  <!-- Readme Guide Modal -->
+  <div id="readmeModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Panduan Kitab Audio">
+    <div id="readmeBody" class="modal-content">
+      <!-- Readme Content injected via JS -->
+    </div>
+  </div>
+
+  <!-- AI Chat Modal (LMStudio) -->
+  <div id="aiChatModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Tanya AI Kitab Audio">
+    <div class="modal-content chat-modal-content">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div class="modal-title" style="font-size: 1.15rem;">🤖 Tanya AI Kitab Audio</div>
+          <select id="aiModelSelect" class="select-custom" style="font-size: 0.76rem; padding: 4px 8px; min-height: 28px;">
+            <option value="google/gemma-4-e4b">Model: google/gemma-4-e4b</option>
+          </select>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button id="clearChatBtn" class="btn btn-sm btn-ghost" title="Bersihkan Percakapan">Reset</button>
+          <button id="closeAiChatBtn" class="modal-close">✕</button>
+        </div>
+      </div>
+
+      <!-- Quick prompts -->
+      <div class="quick-prompts-bar">
+        <span class="quick-prompt-chip" data-prompt="Rekomendasi TWS mic paling jernih untuk meeting kerja under 1.5 juta?">TWS Mic Jernih &lt; 1.5jt</span>
+        <span class="quick-prompt-chip" data-prompt="IEM karakter vokal tebal dan bass punchy terbaik under 2 juta?">IEM Vokal &amp; Bass &lt; 2jt</span>
+        <span class="quick-prompt-chip" data-prompt="Apa rekomendasi Dongle DAC terbaik untuk IEM bercolokan 4.4mm?">Dongle DAC 4.4mm</span>
+        <span class="quick-prompt-chip" data-prompt="Headphone wireless ANC terbaik yang suaranya paling balance?">Headphone Wireless ANC</span>
+      </div>
+
+      <!-- Messages container -->
+      <div id="chatMessages" class="chat-messages-box"></div>
+
+      <!-- Chat input form -->
+      <form id="chatForm" class="chat-input-form">
+        <input 
+          type="text" 
+          id="chatInput" 
+          class="chat-input-field" 
+          placeholder="Tanyakan rekomendasi gear, budget, atau karakter suara..." 
+          autocomplete="off"
+          required
+        >
+        <button type="submit" class="btn btn-primary" style="padding: 0 16px;">Kirim</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/typewriter.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
