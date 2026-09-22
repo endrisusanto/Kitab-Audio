@@ -395,6 +395,7 @@
     } catch (e) {
       console.error("Error reloading database:", e);
     }
+  }
 
   // Category Tabs
   function renderCategoryTabs() {
