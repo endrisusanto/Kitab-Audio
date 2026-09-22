@@ -47,6 +47,9 @@
         <button id="openReadmeBtn" class="btn btn-secondary btn-sm" title="Buka Panduan & Cara Baca Tier">
           <span>📖 Panduan Dasar</span>
         </button>
+        <button id="openUploadBtn" class="btn btn-secondary btn-sm" title="Upload & Update File Excel">
+          <span>📤 Update Excel</span>
+        </button>
         <button id="conciergeToggleBtn" class="btn btn-secondary btn-sm" title="Buka/Tutup Asisten Panduan">
           <span>Tanya Panduan Audio</span>
         </button>
@@ -266,6 +269,38 @@
         >
         <button type="submit" class="btn btn-primary" style="padding: 0 16px;">Kirim</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Excel Upload Modal -->
+  <div id="uploadModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Upload File Excel">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <div class="modal-title">📤 Update Database Excel</div>
+        <button id="closeUploadModalBtn" class="modal-close">✕</button>
+      </div>
+      
+      <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5;">
+        Upload file spreadsheet <strong>.xlsx</strong> terbaru (format Kitab Audio). Database akan diekstrak otomatis dan katalog langsung diperbarui secara realtime.
+      </div>
+
+      <div id="uploadDropzone" class="upload-dropzone">
+        <div class="upload-dropzone-icon">📁</div>
+        <div class="upload-dropzone-text">Tarik &amp; letakkan file <strong>.xlsx</strong> ke sini atau <u>klik untuk memilih file</u></div>
+        <input type="file" id="excelFileInput" accept=".xlsx" style="display: none;">
+      </div>
+
+      <div id="selectedFileInfo" class="selected-file-info" style="display: none;">
+        <span id="selectedFileName" class="selected-file-name">file.xlsx</span>
+        <span id="selectedFileSize" class="selected-file-size">0 KB</span>
+      </div>
+
+      <div id="uploadStatusMsg" class="upload-status-msg" style="display: none;"></div>
+
+      <div class="modal-actions-row">
+        <button id="submitUploadBtn" class="btn btn-primary flex-1" disabled>Proses &amp; Update Database</button>
+        <button id="cancelUploadBtn" class="btn btn-secondary">Batal</button>
+      </div>
     </div>
   </div>
 

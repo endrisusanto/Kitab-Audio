@@ -1423,3 +1423,80 @@ body {
 .chat-link-btn.yt-link {
   color: #ef4444;
 }
+
+/* Upload Dropzone & Info (Antislop Clean) */
+#uploadModal {
+  z-index: 140;
+}
+
+.upload-dropzone {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--bg-surface);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.dragover {
+  border-color: var(--accent-primary);
+  background-color: var(--accent-subtle);
+}
+
+.upload-dropzone-icon {
+  font-size: 2.4rem;
+}
+
+.upload-dropzone-text {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.selected-file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+}
+
+.selected-file-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.selected-file-size {
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.upload-status-msg {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.upload-status-msg.success {
+  background-color: rgba(52, 211, 153, 0.15);
+  border: 1px solid var(--tier-a);
+  color: var(--tier-a);
+}
+
+.upload-status-msg.error {
+  background-color: rgba(248, 113, 113, 0.15);
+  border: 1px solid var(--tier-e);
+  color: var(--tier-e);
+}

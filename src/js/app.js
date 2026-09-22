@@ -40,6 +40,18 @@
   const conciergePanel = document.getElementById("conciergePanel");
   const readmeModal = document.getElementById("readmeModal");
   const readmeBody = document.getElementById("readmeBody");
+  const openUploadBtn = document.getElementById("openUploadBtn");
+  const uploadModal = document.getElementById("uploadModal");
+  const closeUploadModalBtn = document.getElementById("closeUploadModalBtn");
+  const cancelUploadBtn = document.getElementById("cancelUploadBtn");
+  const uploadDropzone = document.getElementById("uploadDropzone");
+  const excelFileInput = document.getElementById("excelFileInput");
+  const selectedFileInfo = document.getElementById("selectedFileInfo");
+  const selectedFileName = document.getElementById("selectedFileName");
+  const selectedFileSize = document.getElementById("selectedFileSize");
+  const submitUploadBtn = document.getElementById("submitUploadBtn");
+  const uploadStatusMsg = document.getElementById("uploadStatusMsg");
+  let selectedUploadFile = null;
 
   // Init App
   async function init() {
@@ -218,7 +230,171 @@
     if (openReadmeBtn) {
       openReadmeBtn.onclick = openReadme;
     }
+
+    // Upload Excel Modal
+    if (openUploadBtn) {
+      openUploadBtn.onclick = openUploadModal;
+    }
+
+    if (closeUploadModalBtn) {
+      closeUploadModalBtn.onclick = closeUploadModal;
+    }
+
+    if (cancelUploadBtn) {
+      cancelUploadBtn.onclick = closeUploadModal;
+    }
+
+    if (uploadModal) {
+      uploadModal.onclick = (e) => {
+        if (e.target === uploadModal) closeUploadModal();
+      };
+    }
+
+    if (uploadDropzone && excelFileInput) {
+      uploadDropzone.onclick = () => excelFileInput.click();
+
+      uploadDropzone.ondragover = (e) => {
+        e.preventDefault();
+        uploadDropzone.classList.add("dragover");
+      };
+
+      uploadDropzone.ondragleave = () => {
+        uploadDropzone.classList.remove("dragover");
+      };
+
+      uploadDropzone.ondrop = (e) => {
+        e.preventDefault();
+        uploadDropzone.classList.remove("dragover");
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          handleFileSelected(e.dataTransfer.files[0]);
+        }
+      };
+
+      excelFileInput.onchange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+          handleFileSelected(e.target.files[0]);
+        }
+      };
+    }
+
+    if (submitUploadBtn) {
+      submitUploadBtn.onclick = handleUploadSubmit;
+    }
   }
+
+  function openUploadModal() {
+    if (!uploadModal) return;
+    selectedUploadFile = null;
+    if (excelFileInput) excelFileInput.value = "";
+    if (selectedFileInfo) selectedFileInfo.style.display = "none";
+    if (uploadStatusMsg) uploadStatusMsg.style.display = "none";
+    if (submitUploadBtn) {
+      submitUploadBtn.disabled = true;
+      submitUploadBtn.textContent = "Proses & Update Database";
+    }
+    uploadModal.classList.add("active");
+  }
+
+  function closeUploadModal() {
+    if (uploadModal) uploadModal.classList.remove("active");
+  }
+
+  function handleFileSelected(file) {
+    if (!file || !file.name.endsWith(".xlsx")) {
+      alert("Harap pilih file dengan format spreadsheet .xlsx");
+      return;
+    }
+
+    selectedUploadFile = file;
+    if (selectedFileName) selectedFileName.textContent = file.name;
+    if (selectedFileSize) selectedFileSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
+    if (selectedFileInfo) selectedFileInfo.style.display = "flex";
+    if (submitUploadBtn) submitUploadBtn.disabled = false;
+    if (uploadStatusMsg) uploadStatusMsg.style.display = "none";
+  }
+
+  async function handleUploadSubmit() {
+    if (!selectedUploadFile) return;
+
+    if (submitUploadBtn) {
+      submitUploadBtn.disabled = true;
+      submitUploadBtn.textContent = "Mengekstrak & Memperbarui Database...";
+    }
+
+    try {
+      const resp = await fetch("/api/upload-excel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/octet-stream",
+          "X-Filename": encodeURIComponent(selectedUploadFile.name)
+        },
+        body: selectedUploadFile
+      });
+
+      const res = await resp.json();
+
+      if (!resp.ok || !res.success) {
+        throw new Error(res.error || "Gagal mengupdate database");
+      }
+
+      if (uploadStatusMsg) {
+        uploadStatusMsg.className = "upload-status-msg success";
+        uploadStatusMsg.style.display = "block";
+        const stats = res.stats || {};
+        uploadStatusMsg.innerHTML = `
+          <strong>✓ Berhasil!</strong> ${res.message}<br>
+          <span style="font-size: 0.76rem;">Total: ${stats.total_categories || 21} Kategori, ${stats.total_items || 0} Perangkat Audio terindeks.</span>
+        `;
+      }
+
+      // Reload database immediately in web client
+      await reloadDatabase();
+
+      if (submitUploadBtn) {
+        submitUploadBtn.textContent = "✓ Selesai Diperbarui";
+      }
+
+      setTimeout(() => {
+        closeUploadModal();
+      }, 1500);
+
+    } catch (err) {
+      console.error(err);
+      if (uploadStatusMsg) {
+        uploadStatusMsg.className = "upload-status-msg error";
+        uploadStatusMsg.style.display = "block";
+        uploadStatusMsg.textContent = `Gagal: ${err.message}`;
+      }
+      if (submitUploadBtn) {
+        submitUploadBtn.disabled = false;
+        submitUploadBtn.textContent = "Coba Lagi";
+      }
+    }
+  }
+
+  async function reloadDatabase() {
+    try {
+      const resp = await fetch(`data/audio_data.json?t=${Date.now()}`);
+      if (!resp.ok) return;
+      db = await resp.json();
+
+      renderCategoryTabs();
+      const currentCatName = currentCategory ? currentCategory.name : db.categories[0]?.name;
+      selectCategory(currentCatName || "TWS");
+
+      // Reinit typewriter concierge with updated database if available
+      if (window.AudioConcierge) {
+        new window.AudioConcierge(
+          "typewriterOutput",
+          "conciergeOptions",
+          "conciergeResults",
+          db,
+          (product) => openProductModal(product)
+        );
+      }
+    } catch (e) {
+      console.error("Error reloading database:", e);
+    }
 
   // Category Tabs
   function renderCategoryTabs() {

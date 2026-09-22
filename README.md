@@ -8,6 +8,8 @@ Dibangun dengan filosofi **Antislop** (copywriting jujur tanpa jargon marketing 
 
 ## ✨ Fitur Utama
 
+- **📤 Live Excel Upload & Auto-Update:**
+  - Kemudahan memperbarui database langsung dari UI web melalui upload file spreadsheet `.xlsx` (drag & drop). Sistem akan mengekstrak otomatis 21 kategori dan me-refresh katalog serta AI RAG secara instan tanpa perlu restart container Docker.
 - **🤖 Asisten AI Audio (LMStudio RAG Integration):**
   - Terhubung langsung ke endpoint LMStudio lokal (`google/gemma-4-e4b`, `google/gemma-4-12b-qat`, `qwen3.6-35b-a3b-uncensored-hauhaucs-aggressive`).
   - Dilengkapi RAG (*Retrieval-Augmented Generation*) berbasis database Kitab Audio.

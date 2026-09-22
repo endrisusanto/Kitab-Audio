@@ -99,7 +99,73 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
         if self.path == "/api/chat":
             self.handle_post_chat()
             return
+        if self.path == "/api/upload-excel":
+            self.handle_post_upload_excel()
+            return
         self.send_error(404, "Endpoint not found")
+
+    def handle_post_upload_excel(self):
+        global AUDIO_DB
+        content_length = int(self.headers.get("Content-Length", 0))
+        if content_length == 0:
+            self.send_response(400)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(json.dumps({"success": False, "error": "File kosong / tidak ada data"}).encode("utf-8"))
+            return
+
+        body = self.rfile.read(content_length)
+        content_type = self.headers.get("Content-Type", "")
+        
+        file_bytes = body
+        if "multipart/form-data" in content_type:
+            boundary_match = re.search(r'boundary=([^;]+)', content_type)
+            if boundary_match:
+                boundary = boundary_match.group(1).strip().strip('"').encode("utf-8")
+                parts = body.split(b"--" + boundary)
+                for p in parts:
+                    if b"filename=" in p and b"\r\n\r\n" in p:
+                        _, content_part = p.split(b"\r\n\r\n", 1)
+                        file_bytes = content_part.rstrip(b"\r\n").rstrip(b"--")
+                        break
+
+        upload_dir = os.path.join(WEB_DIR, "data")
+        os.makedirs(upload_dir, exist_ok=True)
+        upload_path = os.path.join(upload_dir, "uploaded_latest.xlsx")
+        
+        try:
+            with open(upload_path, "wb") as f:
+                f.write(file_bytes)
+
+            from scripts.parse_excel import parse_xlsx
+            new_db = parse_xlsx(upload_path)
+            
+            json_path = os.path.join(upload_dir, "audio_data.json")
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(new_db, f, ensure_ascii=False, indent=2)
+
+            AUDIO_DB = new_db
+
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+            resp = {
+                "success": True,
+                "message": "Database berhasil diperbarui dari file Excel!",
+                "stats": new_db.get("stats", {})
+            }
+            self.wfile.write(json.dumps(resp).encode("utf-8"))
+
+        except Exception as e:
+            print(f"Error parsing uploaded Excel: {e}")
+            self.send_response(500)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+            err_resp = {
+                "success": False,
+                "error": f"Gagal memproses file Excel: {str(e)}"
+            }
+            self.wfile.write(json.dumps(err_resp).encode("utf-8"))
 
     def handle_get_models(self):
         try:
