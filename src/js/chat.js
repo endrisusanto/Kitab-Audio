@@ -95,43 +95,34 @@
   }
 
   function matchProductsInResponse(text, serverRelevant = []) {
+    if (!text || typeof text !== "string") return [];
     const matched = new Map();
-    const textLow = (text || "").toLowerCase();
+    const textLow = text.toLowerCase();
 
-    // Check server relevant items first
-    if (Array.isArray(serverRelevant)) {
-      serverRelevant.forEach(p => {
-        if (p && p.id && !matched.has(p.id)) {
-          const nameLow = (p.name || "").toLowerCase();
-          const cleanWords = nameLow.replace(/[^a-z0-9]/g, ' ').split(/\s+/).filter(w => w.length >= 3);
-          const isMentioned = textLow.includes(nameLow) || cleanWords.some(w => textLow.includes(w) && w.length >= 4);
-          if (isMentioned) {
-            matched.set(p.id, p);
-          }
-        }
-      });
-    }
+    // Check server candidate items first, then database
+    const candidates = [
+      ...(Array.isArray(serverRelevant) ? serverRelevant : []),
+      ...allProducts
+    ];
 
-    // Also scan all products for exact names mentioned in text
-    if (matched.size < 4 && allProducts.length > 0) {
-      for (const p of allProducts) {
-        if (matched.has(p.id)) continue;
-        const nameLow = (p.name || "").toLowerCase().trim();
-        if (nameLow.length >= 4 && textLow.includes(nameLow)) {
-          matched.set(p.id, p);
-          if (matched.size >= 4) break;
-        }
+    for (const p of candidates) {
+      if (!p || !p.id || !p.name || matched.has(p.id)) continue;
+      
+      const rawName = p.name.toLowerCase().trim();
+      const baseName = rawName.split(/[\(\[\{]/)[0].trim();
+
+      const isMentioned = 
+        (rawName.length >= 3 && textLow.includes(rawName)) ||
+        (baseName.length >= 4 && textLow.includes(baseName));
+
+      if (isMentioned) {
+        matched.set(p.id, p);
       }
+
+      if (matched.size >= 4) break;
     }
 
-    // If still empty but server returned relevant items, take top 2
-    if (matched.size === 0 && Array.isArray(serverRelevant) && serverRelevant.length > 0) {
-      serverRelevant.slice(0, 2).forEach(p => {
-        if (p && p.id) matched.set(p.id, p);
-      });
-    }
-
-    return Array.from(matched.values()).slice(0, 4);
+    return Array.from(matched.values());
   }
 
   async function sendMessage(text) {
